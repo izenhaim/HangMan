@@ -1,4 +1,4 @@
-package qp_project2_HangMan;
+package qp_project2_HangMan.HangMan;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class MainServer {
 	
 	ArrayList<Player> players = new ArrayList<>();
+	
 	HashMap< Player , ArrayList<Response> > responses = new HashMap<>();
 	public static void main(String[] args) {
 		ServerSocket server;
@@ -32,13 +33,28 @@ public class MainServer {
 			Request req = (Request) in.readObject();
 			switch (req.type) {
 			case StartGame:
-				
+				//give the available players
+				//get the opponent name
+				//request(send response over the read request to the player) opponent
+				// if accepted :
+				//	create game 
+				//	get the word
+				//	give the opponent response about the word 
+				//end
 				break;
 			case Read:
-				
+				//check the to do hashMap
+				//if anything there , give the response to the player 
+				//
 				break;
 			case Write:
-				
+				//get the letter / word ... 
+				//hand it to the related game
+				//get the response from the game
+				//put the response in the to do hash map 
+				break;
+			case Connect:
+				//put the player in the available list
 				break;
 				
 			
@@ -61,6 +77,7 @@ class Request implements Serializable {
 }
 
 class Response implements Serializable{
+	boolean isEmpty = true;
 	Player resiver;
 	String GameID;
 }

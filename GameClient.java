@@ -1,4 +1,4 @@
-package qp_project2_HangMan;
+package qp_project2_HangMan.HangMan;
 
 public class GameClient {
 
