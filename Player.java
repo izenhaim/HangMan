@@ -2,6 +2,7 @@ package qp_project2_HangMan.HangMan;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Player implements Serializable {
 	boolean firstTimer = true;
 	boolean gusser;

@@ -45,22 +45,26 @@ public class Game {
 				gres.resiver = r.sender.equals(p1)?p1:p2;
 				gres.gussedChars=this.gussedChars;
 				gres.gussedNow = r.value;
+				gres.wright=true;
 				Response[] toReturn = {res,gres};
 				return toReturn;
-				
-				
-				
-				
 			}else{
 				GuesserResponse res = new GuesserResponse();
 				res.isEmpty=false;
 				res.resiver = r.sender.equals(p1)?p2:p1;
 				res.GameID=this.ID;
 				res.wright = false;
+				GiverResponse gres = new GiverResponse();
+				gres.GameID=this.ID;
+				gres.isEmpty=false;
+				gres.resiver = r.sender.equals(p1)?p1:p2;
+				gres.gussedNow = r.value;
+				gres.wright=false;
+				Response[] toReturn = {res,gres};
+				return toReturn;
 			}
 			
-		}
-		return null;
+		}else return new Response[0];
 	}
 
 }
