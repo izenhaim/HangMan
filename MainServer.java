@@ -42,6 +42,9 @@ public class MainServer {
 				//	give the opponent response about the word 
 				//end
 				break;
+			case DisConnect:
+				//remove from the available list
+				break;
 			case Read:
 				//check the to do hashMap
 				//if anything there , give the response to the player 
@@ -74,6 +77,8 @@ class Request implements Serializable {
 	Player sender;
 	ReqType type;
 	String GameID;
+	String msg;
+	Character value;
 }
 
 class Response implements Serializable{
@@ -109,13 +114,58 @@ class Game{
 	Player p1;
 	Player p2;
 	String ID;
-	String word;
-	ArrayList<Character> gussedChars;
+	private	ArrayList<Character> gussedChars = new ArrayList<>();
+	private ArrayList<Character> chars = new ArrayList<>();
 	
 	public Game(Player p1 , Player p2) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.ID = p1.toString()+","+p2.toString();
 	}
+	void setword(String word){
+		if(this.chars.isEmpty()){
+			this.gussedChars.ensureCapacity(word.length());
+			for(int i=0 ; i<word.length() ; i++)
+				this.chars.add(word.charAt(i));
+		}
+	}
+	Response handleGame(Request r){
+		if(r.type == ReqType.Write){
+			
+			if(chars.contains(r.value)){
+				for(int i=0 ; i<chars.size() ; i++){
+					ArrayList<Integer> places = new ArrayList<>();
+					if(chars.get(i).equals(r.value)){
+						gussedChars.add(i , r.value);
+						places.add(i);
+					}
+				}
+				
+				Response res = new GuesserResponse();
+				res.isEmpty=false;
+				res.resiver = r.sender.equals(p1)?p2:p1;
+				res.GameID=this.ID;
+				//todo
+				
+			}else{
+				
+			}
+			
+		}
+		return null;
+	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
