@@ -2,7 +2,7 @@ package qp_project2_HangMan.HangMan;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -31,6 +31,8 @@ public class MainServer {
 		try {
 			ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 			Request req = (Request) in.readObject();
+			PrintWriter pw = new PrintWriter(client.getOutputStream());
+			pw.println("resived");
 			switch (req.type) {
 			case StartGame:
 				//give the available players
@@ -72,91 +74,6 @@ public class MainServer {
 	}
 	
 }
-
-class Request implements Serializable {
-	Player sender;
-	ReqType type;
-	String GameID;
-	String msg;
-	Character value;
-}
-
-class Response implements Serializable{
-	boolean isEmpty = true;
-	Player resiver;
-	String GameID;
-}
-
-class GuesserResponse extends Response {
-	
-}
-
-class GiverResponse extends Response {
-	
-}
-
-class Player implements Serializable{
-	boolean firstTimer = true;
-	boolean gusser;
-	String opponentName;
-	String name;
-	int opponentIP;
-	@Override
-	public String toString() {
-		return this.name;
-	}
-	
-	
-}
-
-
-class Game{
-	Player p1;
-	Player p2;
-	String ID;
-	private	ArrayList<Character> gussedChars = new ArrayList<>();
-	private ArrayList<Character> chars = new ArrayList<>();
-	
-	public Game(Player p1 , Player p2) {
-		this.p1 = p1;
-		this.p2 = p2;
-		this.ID = p1.toString()+","+p2.toString();
-	}
-	void setword(String word){
-		if(this.chars.isEmpty()){
-			this.gussedChars.ensureCapacity(word.length());
-			for(int i=0 ; i<word.length() ; i++)
-				this.chars.add(word.charAt(i));
-		}
-	}
-	Response handleGame(Request r){
-		if(r.type == ReqType.Write){
-			
-			if(chars.contains(r.value)){
-				for(int i=0 ; i<chars.size() ; i++){
-					ArrayList<Integer> places = new ArrayList<>();
-					if(chars.get(i).equals(r.value)){
-						gussedChars.add(i , r.value);
-						places.add(i);
-					}
-				}
-				
-				Response res = new GuesserResponse();
-				res.isEmpty=false;
-				res.resiver = r.sender.equals(p1)?p2:p1;
-				res.GameID=this.ID;
-				//todo
-				
-			}else{
-				
-			}
-			
-		}
-		return null;
-	}
-	
-}
-
 
 
 
