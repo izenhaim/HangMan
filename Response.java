@@ -8,4 +8,9 @@ public class Response implements Serializable {
 	boolean wright;
 	Player resiver;
 	String GameID;
+	String msg;
+	public Response() {}
+	public Response(String msg) {
+		this.msg = msg;
+	}
 }

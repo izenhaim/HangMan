@@ -2,6 +2,7 @@ package qp_project2_HangMan.HangMan;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -18,6 +19,7 @@ public class MainServer {
 			server = new ServerSocket(1111);
 			while(true){
 				Socket client = server.accept();
+				System.out.println("accepted a new client!");
 				GameCenter gc = new GameCenter(client);
 				gc.run();
 			}
@@ -37,6 +39,7 @@ class GameCenter extends Thread {
 	}
 	@Override
 	public void run() {
+		System.out.println("run begun");
 		this.reqHandler();
 	}
 	private void reqHandler(){
@@ -72,9 +75,12 @@ class GameCenter extends Thread {
 				break;
 			case Connect:
 				//put the player in the available list
+				ObjectOutputStream oot = new ObjectOutputStream(client.getOutputStream());
+				oot.writeObject(new Response("valid"));
 				break;
 				
-			
+			default:
+				client.close();
 			}
 			
 		} catch (IOException e) {
