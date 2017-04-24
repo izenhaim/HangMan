@@ -48,6 +48,7 @@ class GameCenter extends Thread {
 			Request req = (Request) in.readObject();
 			PrintWriter pw = new PrintWriter(client.getOutputStream());
 			pw.println("resived");
+			pw.flush();
 			switch (req.type) {
 			case StartGame:
 				//give the available players
@@ -75,8 +76,9 @@ class GameCenter extends Thread {
 				break;
 			case Connect:
 				//put the player in the available list
-				ObjectOutputStream oot = new ObjectOutputStream(client.getOutputStream());
-				oot.writeObject(new Response("valid"));
+				
+				pw.print("valid");
+				pw.flush();
 				break;
 				
 			default:

@@ -1,7 +1,6 @@
 package qp_project2_HangMan.HangMan;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -24,20 +23,20 @@ public class GameClient {
 		try {
 			JFrame MainMenu = new JFrame("HangManMenu");
 			MainMenu.setLocation(450, 150);
-			MainMenu.setAlwaysOnTop(true);
 			MainMenu.setVisible(true);
+			MainMenu.getContentPane().setLayout(null);
 			MainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			MainMenu.setResizable(false);
 			MainMenu.setSize(550, 350);
-			MainMenu.getContentPane().setLayout(null);
 			
 			JLabel welcomeLable = new JLabel("Welcome To HangMan-CostomMade!");
+			welcomeLable.setBounds(161, 45, 233, 16);
 			welcomeLable.setHorizontalAlignment(SwingConstants.CENTER);
 			welcomeLable.setForeground(Color.BLUE);
-			welcomeLable.setBounds(162, 18, 233, 16);
 			MainMenu.getContentPane().add(welcomeLable);
 			
 			JButton StartGameButton = new JButton("Start New GAME");
+			StartGameButton.setBounds(210, 133, 144, 29);
 			StartGameButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("button clicked! ");
@@ -45,19 +44,18 @@ public class GameClient {
 					// start new game ...
 				}
 			});
-			StartGameButton.setBackground(new Color(0, 255, 0));
+			StartGameButton.setBackground(Color.WHITE);
 			StartGameButton.setForeground(Color.RED);
-			StartGameButton.setBounds(198, 82, 150, 58);
 			MainMenu.getContentPane().add(StartGameButton);
 			
 			JTextField ScoreField = new JTextField();
-			ScoreField.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 13));
-			ScoreField.setEditable(false);
-			ScoreField.setBounds(198, 216, 150, 26);
-			ScoreField.setColumns(10);
-			ScoreField.setText("Your Score is : " + String.valueOf(score));
-			ScoreField.setVisible(true);
 			MainMenu.getContentPane().add(ScoreField);
+			ScoreField.setBounds(210, 218, 140, 26);
+			ScoreField.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 13));
+			ScoreField.setText("Your Score is : " + String.valueOf(score));
+			ScoreField.setColumns(10);
+			ScoreField.setEditable(false);
+			ScoreField.setVisible(true);
 			
 			//for test
 //			Thread.sleep(5000);
