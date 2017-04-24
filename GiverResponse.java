@@ -3,11 +3,7 @@ package qp_project2_HangMan.HangMan;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class GiverResponse implements Response {
-	boolean isEmpty;
-	boolean wright;
-	Player resiver;
-	String GameID;
+public class GiverResponse extends Response {
 	ArrayList<Integer> gussedChars;
 	Character gussedNow;
 }

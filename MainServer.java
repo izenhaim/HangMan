@@ -10,24 +10,36 @@ import java.util.HashMap;
 
 public class MainServer {
 	
-	ArrayList<Player> players = new ArrayList<>();
 	
-	HashMap< Player , ArrayList<Response> > responses = new HashMap<>();
 	public static void main(String[] args) {
 		ServerSocket server;
+		
 		try {
 			server = new ServerSocket(1111);
 			while(true){
 				Socket client = server.accept();
-				reqHandler(client);
+				GameCenter gc = new GameCenter(client);
+				gc.run();
 			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private static void reqHandler(Socket client){
+}
+class GameCenter extends Thread {
+	Socket client;
+	static ArrayList<Player> players = new ArrayList<>();
+	static HashMap< Player , ArrayList<Response> > responses = new HashMap<>();
+	static ArrayList<Game> games = new ArrayList<>();
+	public GameCenter(Socket client) {
+		this.client=client;
+	}
+	@Override
+	public void run() {
+		this.reqHandler();
+	}
+	private void reqHandler(){
 		try {
 			ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 			Request req = (Request) in.readObject();
@@ -56,7 +68,7 @@ public class MainServer {
 				//get the letter / word ... 
 				//hand it to the related game
 				//get the response from the game
-				//put the response in the to do hash map 
+				//put the response in the to do hash map
 				break;
 			case Connect:
 				//put the player in the available list
