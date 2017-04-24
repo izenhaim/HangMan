@@ -62,8 +62,8 @@ public class GameClient {
 			
 			
 			System.out.println("pls enter a name !");
+			String name = JOptionPane.showInputDialog("please enter a naem!",null);
 			while(true){
-				String name = JOptionPane.showInputDialog("please enter a naem!",null);
 				Request r = new Request();
 				r.type=ReqType.Connect;
 				r.msg=name;

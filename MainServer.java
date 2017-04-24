@@ -34,6 +34,7 @@ class GameCenter extends Thread {
 	static ArrayList<Player> players = new ArrayList<>();
 	static HashMap< Player , ArrayList<Response> > responses = new HashMap<>();
 	static ArrayList<Game> games = new ArrayList<>();
+	
 	public GameCenter(Socket client) {
 		this.client=client;
 	}
@@ -76,9 +77,19 @@ class GameCenter extends Thread {
 				break;
 			case Connect:
 				//put the player in the available list
-				
-				pw.print("valid");
-				pw.flush();
+				while(true){
+					Player p = new Player(req.msg);
+					if(!players.contains(p)){
+						pw.print("valid");
+						pw.flush();
+						players.add(p);
+						break;
+					}else{
+						pw.print("inValid");
+						pw.flush();
+						req = (Request)in.readObject();
+					}
+				}
 				break;
 				
 			default:
