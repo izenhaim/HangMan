@@ -21,9 +21,9 @@ public class MainServer {
 			while(true){
 //				System.out.println(server.getLocalSocketAddress());
 				Socket client = server.accept();
-				System.out.println("accepted a new client!");
+				System.out.println("accepted a new client!1");
 				GameCenter GC = new GameCenter(client);
-				GC.start();dd
+				GC.start();
 				//new GameCenter(client).start();
 //				while(true){
 //					System.out.println(new Scanner(client.getInputStream()).nextLine());
