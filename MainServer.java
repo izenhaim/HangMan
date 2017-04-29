@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class MainServer {
 	
@@ -18,10 +19,18 @@ public class MainServer {
 		try {
 			server = new ServerSocket(1111);
 			while(true){
+//				System.out.println(server.getLocalSocketAddress());
 				Socket client = server.accept();
 				System.out.println("accepted a new client!");
-				GameCenter gc = new GameCenter(client);
-				gc.run();
+				GameCenter GC = new GameCenter(client);
+				GC.start();dd
+				//new GameCenter(client).start();
+//				while(true){
+//					System.out.println(new Scanner(client.getInputStream()).nextLine());
+//					PrintWriter pw = new PrintWriter(client.getOutputStream());
+//					pw.println(new Scanner(System.in).nextLine());
+//					pw.flush();
+//				}
 			}
 			
 		} catch (IOException e) {

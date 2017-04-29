@@ -61,27 +61,35 @@ public class GameClient {
 //			Thread.sleep(5000);
 			
 			
-			System.out.println("pls enter a name !");
-			String name = JOptionPane.showInputDialog("please enter a naem!",null);
+			String name = JOptionPane.showInputDialog("please enter a name1!",null);
+			System.out.println("pls enter a naem !");
 			while(true){
-				Request r = new Request();
+				System.out.println("in while true 1");
+ 				Request r = new Request();
 				r.type=ReqType.Connect;
 				r.msg=name;
-				Scanner sc;
-				Socket s = new Socket("MainServer", 1111);
+				Socket s = new Socket("127.0.0.1", 1111);
+				System.out.println("socket created");
+				Scanner sc =new Scanner(s.getInputStream()) ;
 				ObjectOutputStream oot = new ObjectOutputStream(s.getOutputStream());
+				System.out.println("oot created");
 				while(true){
+					System.out.println("in while true 2");
 					oot.writeObject(r);
 					oot.flush();
-					sc = new Scanner(s.getInputStream());
 					if(sc.nextLine()=="resived"){
+						System.out.println("serever recieved msg");
 						break;
+					}else{
+						System.out.println("server didnot resive anything");
 					}
 				}
+				System.out.println("checking name validity !");
 				if(sc.nextLine()=="valid"){
+					System.out.println("was valid name!");
 					break;
 				}else{
-					System.out.println("sorry this name was taken! pls enter a nother one!");
+					name = JOptionPane.showInputDialog("sorry the name was taken pls enter a nother one!",null);
 				}
 			}
 			

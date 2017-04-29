@@ -3,7 +3,7 @@ package qp_project2_HangMan.HangMan;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class Player implements Comparable , Serializable {
+public class Player implements Serializable {
 	boolean gusser;
 	String opponentName;
 	String name;
@@ -16,11 +16,13 @@ public class Player implements Comparable , Serializable {
 	public String toString() {
 		return this.name;
 	}
+	
 	@Override
-	public int compareTo(Object o) {
+	public boolean equals(Object o) {
 		if(((Player)o).name.equals(this.name))
-			return 0;
-		else return 1;
+			return true;
+		else
+			return false;
 	}
 	
 }
