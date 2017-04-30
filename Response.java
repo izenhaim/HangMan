@@ -9,7 +9,10 @@ public class Response implements Serializable {
 	Player resiver;
 	String GameID;
 	String msg;
-	public Response() {}
+
+	public Response() {
+	}
+
 	public Response(String msg) {
 		this.msg = msg;
 	}

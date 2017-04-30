@@ -7,4 +7,3 @@ public class GiverResponse extends Response {
 	ArrayList<Integer> gussedChars;
 	Character gussedNow;
 }
-

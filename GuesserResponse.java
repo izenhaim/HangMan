@@ -4,5 +4,5 @@ import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class GuesserResponse extends Response {
-	ArrayList<Integer> places=  new ArrayList<>();
+	ArrayList<Integer> places = new ArrayList<>();
 }

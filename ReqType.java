@@ -1,11 +1,6 @@
 package qp_project2_HangMan.HangMan;
 
 public enum ReqType {
-	Connect,
-	DisConnect,
-	StartGame,
-	Read,
-	Write
-	;
-	
+	Connect, DisConnect, StartGame, Read, Write;
+
 }

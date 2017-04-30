@@ -8,21 +8,25 @@ public class Player implements Serializable {
 	String opponentName;
 	String name;
 	int opponentIP;
-	public Player() {}
-	public Player(String name){
-		this.name=name;
+
+	public Player() {
 	}
+
+	public Player(String name) {
+		this.name = name;
+	}
+
 	@Override
 	public String toString() {
 		return this.name;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
-		if(((Player)o).name.equals(this.name))
+		if (((Player) o).name.equals(this.name))
 			return true;
 		else
 			return false;
 	}
-	
+
 }
