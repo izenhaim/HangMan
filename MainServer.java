@@ -14,8 +14,6 @@ public class MainServer {
 			while (true) {
 				Socket client = server.accept();
 				System.out.println("accepted a new client!");
-//				GameCenter GC = new GameCenter(client);
-//				GC.start();
 				new GameCenter(client).start();
 			}
 

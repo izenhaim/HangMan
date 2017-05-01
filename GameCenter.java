@@ -46,9 +46,15 @@ public class GameCenter extends Thread {
 				// give the opponent response about the word
 				// end
 				break;
+				
 			case DisConnect:
-				// remove from the available list
+				System.out.println("in DisConnect Case: ...");
+				Player p = new Player(req.msg);
+				int toRemoveIndex = players.lastIndexOf(p);
+				players.remove(toRemoveIndex);
+				System.out.println(players);
 				break;
+				
 			case Read:
 				// check the to do hashMap
 				// if anything there , give the response to the player
@@ -61,10 +67,9 @@ public class GameCenter extends Thread {
 				// put the response in the to do hash map
 				break;
 			case Connect:
-				// put the player in the available list
 				System.out.println("in connect Case: ...");
 				while (true) {
-					Player p = new Player(req.msg);
+					p = new Player(req.msg);
 					if (!players.contains(p)) {
 						System.out.println("was a vaild user");
 						pw.println("valid");
@@ -77,10 +82,11 @@ public class GameCenter extends Thread {
 						pw.flush();
 						req = (Request) in.readObject();
 						System.out.println("got new req");
-						pw.print("resived");
+						pw.println("recived");
 						pw.flush();
 					}
 				}
+				System.out.println(players);
 				break;
 
 			default:
@@ -97,6 +103,5 @@ public class GameCenter extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(players);
 	}
 }
