@@ -1,31 +1,34 @@
 package qp_project2_HangMan.HangMan;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.util.List;
+
 
 public class GameClient {
 
 	public static void main(String[] args) {
 		int score = 0;
+		final List<Response> responses = new ArrayList<>();klj
 		final String[] playerName = new String[1];
-		try {
 			JFrame MainMenu = new JFrame("HangManMenu");
 			MainMenu.setLocation(450, 150);
 			MainMenu.setVisible(true);
@@ -45,7 +48,7 @@ public class GameClient {
 						System.out.println("oot created");
 						Request r = new Request();
 						r.type = ReqType.DisConnect;
-						r.msg = playerName[0];
+						r.sender = playerName[0];
 						while (true) {
 							System.out.println("in while true 2");
 							oot.writeObject(r);
@@ -99,6 +102,7 @@ public class GameClient {
 			ScoreField.setVisible(true);
 
 
+			try {
 			String name = JOptionPane.showInputDialog("please enter a name!", null);
 			System.out.println("pls enter a name !");
 			Socket s = new Socket("127.0.0.1", 1111);
@@ -111,7 +115,7 @@ public class GameClient {
 				System.out.println("in while true 1");
 				Request r = new Request();
 				r.type = ReqType.Connect;
-				r.msg = name;
+				r.sender = name;
 				while (true) {
 					System.out.println("in while true 2");
 					oot.writeObject(r);
@@ -142,6 +146,48 @@ public class GameClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+			
+		//to do ... read from server constantly!
+		try{
+			while (true) {
+				System.out.println("updating from server ...");
+				Socket s = new Socket("127.0.0.1", 1111);
+				System.out.println("socket created");
+				Scanner sc = new Scanner(s.getInputStream());
+				ObjectOutputStream oot = new ObjectOutputStream(s.getOutputStream());
+				System.out.println("oot created");
+				Request r = new Request();
+				r.type = ReqType.Read;
+				r.sender = playerName[0];
+				while (true) {
+					System.out.println("in while true 2");
+					oot.writeObject(r);
+					oot.flush();
+					if (sc.nextLine().equals("recived")) {
+						System.out.println("serever recieved msg ... breaking whileTrue 2");
+						break;
+					} else {
+						System.out.println("server didnot resive anything");
+					}
+				}
+				if(sc.nextBoolean()==true){
+					ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
+					responses = Collections.synchronizedList(responses);
+					
+				}
+				
+				
+			}
+		}catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+			
 
 	}
 }

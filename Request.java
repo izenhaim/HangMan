@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class Request implements Serializable {
-	Player sender;
+	String sender;
 	ReqType type;
 	String GameID;
 	String msg;

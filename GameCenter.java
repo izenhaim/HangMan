@@ -11,7 +11,7 @@ public class GameCenter extends Thread {
 	Socket client;
 	static ArrayList<Player> players = new ArrayList<>();
 	static HashMap<Player, ArrayList<Response>> responses = new HashMap<>();
-	static ArrayList<Game> games = new ArrayList<>();
+	static HashMap<String , Game> games = new HashMap<>();
 
 	public GameCenter(Socket client) {
 		System.out.println("new GC created!");
@@ -48,8 +48,10 @@ public class GameCenter extends Thread {
 				break;
 				
 			case DisConnect:
+				//delete games with this player!
+				// ... 
 				System.out.println("in DisConnect Case: ...");
-				Player p = new Player(req.msg);
+				Player p = new Player(req.sender);
 				int toRemoveIndex = players.lastIndexOf(p);
 				players.remove(toRemoveIndex);
 				System.out.println(players);
@@ -69,7 +71,7 @@ public class GameCenter extends Thread {
 			case Connect:
 				System.out.println("in connect Case: ...");
 				while (true) {
-					p = new Player(req.msg);
+					p = new Player(req.sender);
 					if (!players.contains(p)) {
 						System.out.println("was a vaild user");
 						pw.println("valid");
