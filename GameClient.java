@@ -12,7 +12,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,15 +19,20 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import java.util.List;
 
 
 public class GameClient {
+	static ArrayList<SubGameClient> games = new ArrayList<>();
+	
+	private void gameClosing(String gameID , Boolean Guesser){
+		// to do close from server ...
+		
+	}
 
 	public static void main(String[] args) {
 		int score = 0;
-		final List<Response> responses = new ArrayList<>();klj
 		final String[] playerName = new String[1];
+
 			JFrame MainMenu = new JFrame("HangManMenu");
 			MainMenu.setLocation(450, 150);
 			MainMenu.setVisible(true);
@@ -150,6 +154,7 @@ public class GameClient {
 		//to do ... read from server constantly!
 		try{
 			while (true) {
+				Thread.sleep(1000);
 				System.out.println("updating from server ...");
 				Socket s = new Socket("127.0.0.1", 1111);
 				System.out.println("socket created");
@@ -172,19 +177,25 @@ public class GameClient {
 				}
 				if(sc.nextBoolean()==true){
 					ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
-					responses = Collections.synchronizedList(responses);
-					
+					@SuppressWarnings("unchecked")
+					ArrayList<Response> incomingReses = ((ArrayList<Response>)(oin.readObject()));
+					for(int i=0 ; i< incomingReses.size() ; i++){
+						int index = games.indexOf(new SubGameClient(incomingReses.get(i).GameID));
+						games.get(index).getRes(incomingReses.get(i));
+					}		
 				}
 				
-				
+				s.close();
+				sc.close();
 			}
 		}catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
 		}
 			
 			
