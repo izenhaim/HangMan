@@ -88,6 +88,7 @@ public class GameClient {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("button clicked! ");
+					SubGameClient sub = new SubGameClient("" , "oppo" , playerName[0]);
 					// to do:
 					// start new game ...
 				}
@@ -175,7 +176,7 @@ public class GameClient {
 						System.out.println("server didnot resive anything");
 					}
 				}
-				if(sc.nextBoolean()==true){
+				if(sc.nextLine().equals("True")){
 					ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
 					@SuppressWarnings("unchecked")
 					ArrayList<Response> incomingReses = ((ArrayList<Response>)(oin.readObject()));

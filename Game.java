@@ -8,13 +8,17 @@ public class Game {
 	String ID;
 	private ArrayList<Integer> gussedChars = new ArrayList<>();
 	private ArrayList<Character> chars = new ArrayList<>();
-
+	
 	public Game(Player p1, Player p2) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.ID = p1.toString() + "," + p2.toString();
 	}
-
+	
+	boolean hasPlayer(Player p){
+		return p1.equals(p)||p2.equals(p);
+	}
+	
 	void setword(String word) {
 		if (this.chars.isEmpty()) {
 			this.gussedChars.ensureCapacity(word.length());

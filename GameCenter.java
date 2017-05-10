@@ -2,6 +2,7 @@ package qp_project2_HangMan.HangMan;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -61,6 +62,19 @@ public class GameCenter extends Thread {
 				// check the to do hashMap
 				// if anything there , give the response to the player
 				//
+				System.out.println("in Read Case: ...");
+				if(responses.containsKey(new Player(req.sender))){
+					pw.println("True");
+					pw.flush();
+					ObjectOutputStream oout = new ObjectOutputStream(client.getOutputStream());
+					oout.writeObject(responses.get(new Player(req.sender)));
+					responses.remove(new Player(req.sender));
+					System.gc();
+				}else{
+					pw.println("Flase");
+					pw.flush();
+				}
+				
 				break;
 			case Write:
 				// get the letter / word ...
@@ -88,7 +102,6 @@ public class GameCenter extends Thread {
 						pw.flush();
 					}
 				}
-				System.out.println(players);
 				break;
 
 			default:
@@ -101,6 +114,7 @@ public class GameCenter extends Thread {
 			e.printStackTrace();
 		}
 		try {
+			System.out.println(players);
 			client.close();
 		} catch (IOException e) {
 			e.printStackTrace();
