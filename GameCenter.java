@@ -61,7 +61,7 @@ public class GameCenter extends Thread {
 			case Read:
 				// check the to do hashMap
 				// if anything there , give the response to the player
-				//
+				//		
 				System.out.println("in Read Case: ...");
 				if(responses.containsKey(new Player(req.sender))){
 					pw.println("True");

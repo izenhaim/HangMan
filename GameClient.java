@@ -2,6 +2,7 @@ package qp_project2_HangMan.HangMan;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -85,10 +86,43 @@ public class GameClient {
 			JButton StartGameButton = new JButton("Start New GAME");
 			StartGameButton.setBounds(210, 133, 144, 29);
 			StartGameButton.addActionListener(new ActionListener() {
+				@SuppressWarnings("unchecked")
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("button clicked! ");
-					SubGameClient sub = new SubGameClient("" , "oppo" , playerName[0]);
+					
+					Socket s;
+					try {
+						s = new Socket("127.0.0.1", 1111);
+						System.out.println("socket created");
+						Scanner sc = new Scanner(s.getInputStream());
+						ObjectOutputStream oot = new ObjectOutputStream(s.getOutputStream());
+						System.out.println("oot created");
+						Request r = new Request();
+						r.type = ReqType.StartGame;
+						r.sender = playerName[0];
+						while (true) {
+							oot.writeObject(r);
+							oot.flush();
+							if (sc.nextLine().equals("recived")) {
+								break;
+							} else {
+								System.out.println("server didnot resive anything");
+							}
+						}
+						ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
+						ArrayList<Player> players = ((ArrayList<Player>)oin.readObject());
+						MainMenu.add(new PopupMenu());
+						
+					} catch (UnknownHostException e1) {
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					new SubGameClient("" , "oppo" , playerName[0]);
 					// to do:
 					// start new game ...
 				}
@@ -152,7 +186,6 @@ public class GameClient {
 			e.printStackTrace();
 		}
 			
-		//to do ... read from server constantly!
 		try{
 			while (true) {
 				Thread.sleep(1000);
