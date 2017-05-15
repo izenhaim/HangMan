@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class GameCenter extends Thread {
 	Socket client;
@@ -46,6 +47,19 @@ public class GameCenter extends Thread {
 				// get the word
 				// give the opponent response about the word
 				// end
+				
+				ObjectOutputStream oout = new ObjectOutputStream(client.getOutputStream());
+				oout.writeObject(players);
+				oout.flush();
+				Scanner sc = new Scanner(client.getInputStream());
+				String ChosenName = sc.nextLine();
+				sc.close();
+				Response res = new Response();
+				res.startGame = true;
+				res.msg = req.sender;
+				res.resiver = new Player(ChosenName);
+				responses.get(new Player(ChosenName)).add(res);//TODO
+				
 				break;
 				
 			case DisConnect:
@@ -66,7 +80,7 @@ public class GameCenter extends Thread {
 				if(responses.containsKey(new Player(req.sender))){
 					pw.println("True");
 					pw.flush();
-					ObjectOutputStream oout = new ObjectOutputStream(client.getOutputStream());
+					oout = new ObjectOutputStream(client.getOutputStream());
 					oout.writeObject(responses.get(new Player(req.sender)));
 					responses.remove(new Player(req.sender));
 					System.gc();

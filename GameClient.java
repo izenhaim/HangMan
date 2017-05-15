@@ -2,7 +2,6 @@ package qp_project2_HangMan.HangMan;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -17,7 +16,9 @@ import java.util.Scanner;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -26,7 +27,7 @@ public class GameClient {
 	static ArrayList<SubGameClient> games = new ArrayList<>();
 	
 	private void gameClosing(String gameID , Boolean Guesser){
-		// to do close from server ...
+		// TODO : close from server ...
 		
 	}
 
@@ -76,6 +77,7 @@ public class GameClient {
 					super.windowClosing(e);
 				}
 			});
+			
 
 			JLabel welcomeLable = new JLabel("Welcome To HangMan-CostomMade!");
 			welcomeLable.setBounds(161, 45, 233, 16);
@@ -111,19 +113,33 @@ public class GameClient {
 						}
 						ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
 						ArrayList<Player> players = ((ArrayList<Player>)oin.readObject());
-						MainMenu.add(new PopupMenu());
+						JPopupMenu pop = new JPopupMenu();
+						pop.setLabel("Avalable Players :");
+						MenuListner ML = new MenuListner();
+						for(Player i : players){
+							if(!i.name.equals(playerName[0])){
+								JMenuItem mItem = new JMenuItem(i.name);
+								mItem.setActionCommand(i.name);
+								mItem.addActionListener(ML);
+								pop.add(mItem);
+							}
+						}
+						MainMenu.add(pop);
+						pop.show(MainMenu, MainMenu.getX()+50, MainMenu.getY()+50);
+						String ChosenName = ML.GtName();
+						
+						
 						
 					} catch (UnknownHostException e1) {
 						e1.printStackTrace();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					} catch (ClassNotFoundException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					
-					new SubGameClient("" , "oppo" , playerName[0]);
-					// to do:
+					//new SubGameClient("" , "oppo" , playerName[0]);
+					// TODO :
 					// start new game ...
 				}
 			});
@@ -236,3 +252,17 @@ public class GameClient {
 
 	}
 }
+
+class MenuListner implements ActionListener{
+	// TODO
+	String ChosenName="";
+	@Override	
+	public void actionPerformed(ActionEvent e) {
+		ChosenName = e.getActionCommand();
+	}
+	String GtName(){
+		return ChosenName;
+	}
+	
+}
+

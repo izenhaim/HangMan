@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class Response implements Serializable {
+	boolean startGame;
 	boolean isEmpty;
 	boolean wright;
 	Player resiver;
