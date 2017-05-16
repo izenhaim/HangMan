@@ -4,12 +4,13 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class Response implements Serializable {
-	boolean startGame;
+	boolean startGame = false;
 	boolean isEmpty;
 	boolean wright;
 	Player resiver;
 	String GameID;
 	String msg;
+	String msg2;
 
 	public Response() {
 	}

@@ -8,5 +8,6 @@ public class Request implements Serializable {
 	ReqType type;
 	String GameID;
 	String msg;
+	String msg2;
 	Character value;
 }

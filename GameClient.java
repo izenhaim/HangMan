@@ -16,9 +16,7 @@ import java.util.Scanner;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -113,20 +111,38 @@ public class GameClient {
 						}
 						ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
 						ArrayList<Player> players = ((ArrayList<Player>)oin.readObject());
-						JPopupMenu pop = new JPopupMenu();
-						pop.setLabel("Avalable Players :");
-						MenuListner ML = new MenuListner();
-						for(Player i : players){
-							if(!i.name.equals(playerName[0])){
-								JMenuItem mItem = new JMenuItem(i.name);
-								mItem.setActionCommand(i.name);
-								mItem.addActionListener(ML);
-								pop.add(mItem);
+						String[] pls = new String[players.size()];
+						for(int i=0 ; i<players.size() ; i++)
+							if(players.get(i).name!=playerName[0])
+								pls[i] = players.get(i).name;
+						
+						
+							
+						String chosenName = pls[JOptionPane.showOptionDialog(null, "select opponent", null, JOptionPane.YES_NO_OPTION , JOptionPane.QUESTION_MESSAGE, null, pls, "5")];
+
+						int gLength = JOptionPane.showOptionDialog(null, "select Game Lenght", null, JOptionPane.YES_NO_OPTION , JOptionPane.QUESTION_MESSAGE, null, new String[] {"5","7","9"}, "5");
+						
+						r = new Request();
+						r.type = ReqType.StartGame;
+						r.sender = playerName[0];
+						r.msg = chosenName;
+						r.msg2 = String.valueOf(gLength);
+						while (true) {
+							oot.writeObject(r);
+							oot.flush();
+							if (sc.nextLine().equals("recived")) {
+								break;
+							} else {
+								System.out.println("server didnot resive anything");
 							}
 						}
-						MainMenu.add(pop);
-						pop.show(MainMenu, MainMenu.getX()+50, MainMenu.getY()+50);
-						String ChosenName = ML.GtName();
+						
+						if(sc.nextBoolean()){
+							//TODO
+						}else{
+							//TODO
+						}
+						
 						
 						
 						
@@ -186,6 +202,7 @@ public class GameClient {
 				String res = sc.nextLine();
 				if (res.equals("valid")) {
 					System.out.println("was valid name!...breaking whileTrue 1");
+					MainMenu.setTitle("Welcome " + name);
 					playerName[0] = name;
 					s.close();
 					sc.close();
@@ -229,9 +246,13 @@ public class GameClient {
 					ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
 					@SuppressWarnings("unchecked")
 					ArrayList<Response> incomingReses = ((ArrayList<Response>)(oin.readObject()));
-					for(int i=0 ; i< incomingReses.size() ; i++){
-						int index = games.indexOf(new SubGameClient(incomingReses.get(i).GameID));
-						games.get(index).getRes(incomingReses.get(i));
+					for(Response i : incomingReses){
+						if(i.startGame == true){
+							JOptionPane.showConfirmDialog(MainMenu, "Player " + i.msg +" wants to start game with you for " + i.msg2);
+						}else{
+							int index = games.indexOf(new SubGameClient(i.GameID));
+							games.get(index).getRes(i);
+						}
 					}		
 				}
 				
@@ -253,16 +274,4 @@ public class GameClient {
 	}
 }
 
-class MenuListner implements ActionListener{
-	// TODO
-	String ChosenName="";
-	@Override	
-	public void actionPerformed(ActionEvent e) {
-		ChosenName = e.getActionCommand();
-	}
-	String GtName(){
-		return ChosenName;
-	}
-	
-}
 

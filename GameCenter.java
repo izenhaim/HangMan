@@ -51,14 +51,14 @@ public class GameCenter extends Thread {
 				ObjectOutputStream oout = new ObjectOutputStream(client.getOutputStream());
 				oout.writeObject(players);
 				oout.flush();
-				Scanner sc = new Scanner(client.getInputStream());
-				String ChosenName = sc.nextLine();
-				sc.close();
+				req = (Request) in.readObject();
+				pw.println("recived");
 				Response res = new Response();
 				res.startGame = true;
 				res.msg = req.sender;
-				res.resiver = new Player(ChosenName);
-				responses.get(new Player(ChosenName)).add(res);//TODO
+				res.msg2 = req.msg2;
+				res.resiver = new Player(req.msg);
+				responses.get(new Player(req.msg)).add(res);//TODO
 				
 				break;
 				
