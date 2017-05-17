@@ -7,13 +7,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class GameCenter extends Thread {
 	Socket client;
 	static ArrayList<Player> players = new ArrayList<>();
 	static HashMap<Player, ArrayList<Response>> responses = new HashMap<>();
 	static HashMap<String , Game> games = new HashMap<>();
+	static HashMap<String, Boolean> confirms = new HashMap<>();
 
 	public GameCenter(Socket client) {
 		System.out.println("new GC created!");
@@ -59,6 +59,19 @@ public class GameCenter extends Thread {
 				res.msg2 = req.msg2;
 				res.resiver = new Player(req.msg);
 				responses.get(new Player(req.msg)).add(res);//TODO
+				while(true){
+					Thread.sleep(500);
+					if(confirms.containsKey(req.sender+"-"+req.msg)){
+						oout.writeObject(confirms.get(req.sender+"-"+req.msg));
+						oout.flush();
+						break;
+					}
+				}
+				if(confirms.remove(req.sender+"-"+req.msg)){
+					//TODO
+					games.put(req.sender+"-"+req.msg, new Game())
+				}
+				
 				
 				break;
 				
@@ -125,6 +138,9 @@ public class GameCenter extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {

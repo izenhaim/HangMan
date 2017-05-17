@@ -12,7 +12,7 @@ public class Game {
 	public Game(Player p1, Player p2) {
 		this.p1 = p1;
 		this.p2 = p2;
-		this.ID = p1.toString() + "," + p2.toString();
+		this.ID = p1.toString() + "-" + p2.toString();
 	}
 	
 	boolean hasPlayer(Player p){

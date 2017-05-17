@@ -120,7 +120,7 @@ public class GameClient {
 							
 						String chosenName = pls[JOptionPane.showOptionDialog(null, "select opponent", null, JOptionPane.YES_NO_OPTION , JOptionPane.QUESTION_MESSAGE, null, pls, "5")];
 
-						int gLength = JOptionPane.showOptionDialog(null, "select Game Lenght", null, JOptionPane.YES_NO_OPTION , JOptionPane.QUESTION_MESSAGE, null, new String[] {"5","7","9"}, "5");
+						int gLength = JOptionPane.showOptionDialog(null, "select Game Lenght", null, JOptionPane.YES_NO_OPTION , JOptionPane.QUESTION_MESSAGE, null, new String[] {"3","5","7","9"}, "5");
 						
 						r = new Request();
 						r.type = ReqType.StartGame;
@@ -136,7 +136,7 @@ public class GameClient {
 								System.out.println("server didnot resive anything");
 							}
 						}
-						
+						JOptionPane.showMessageDialog(null, "waiting for "+chosenName + " to confirm");
 						if(sc.nextBoolean()){
 							//TODO
 						}else{
@@ -249,6 +249,7 @@ public class GameClient {
 					for(Response i : incomingReses){
 						if(i.startGame == true){
 							JOptionPane.showConfirmDialog(MainMenu, "Player " + i.msg +" wants to start game with you for " + i.msg2);
+							//TODO
 						}else{
 							int index = games.indexOf(new SubGameClient(i.GameID));
 							games.get(index).getRes(i);
