@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class GameCenter extends Thread {
 	Socket client;
 	static ArrayList<Player> players = new ArrayList<>();
-	static HashMap<Player, ArrayList<Response>> responses = new HashMap<>();
+	static HashMap<String, ArrayList<Response>> responses = new HashMap<>();
 	static HashMap<String , Game> games = new HashMap<>();
 	static HashMap<String, Boolean> confirms = new HashMap<>();
 
@@ -58,18 +58,35 @@ public class GameCenter extends Thread {
 				res.msg = req.sender;
 				res.msg2 = req.msg2;
 				res.resiver = new Player(req.msg);
-				responses.get(new Player(req.msg)).add(res);//TODO
+				if(responses.containsKey((req.msg))){
+					responses.get((req.msg)).add(res);//TODO
+				}else{
+					ArrayList<Response> a = new ArrayList<>();
+					a.add(res);
+					responses.put(req.msg, a);
+				}
+				System.err.println("put in response");
 				while(true){
 					Thread.sleep(500);
 					if(confirms.containsKey(req.sender+"-"+req.msg)){
 						oout.writeObject(confirms.get(req.sender+"-"+req.msg));
 						oout.flush();
+						System.err.println("confirmed");
 						break;
 					}
 				}
 				if(confirms.remove(req.sender+"-"+req.msg)){
 					//TODO
-					games.put(req.sender+"-"+req.msg, new Game())
+					Player p1 = new Player(req.sender);
+					Player p2 = new Player(req.msg);
+					p1.opponentName = p2.name;
+					p2.opponentName = p1.name;
+					p1.gusser = true;
+					games.put(req.sender+"-"+req.msg, new Game(p1,p2,Integer.parseInt(req.msg2)));
+					
+					System.err.println("removed");
+				}else{
+					//TODO
 				}
 				
 				
@@ -89,14 +106,21 @@ public class GameCenter extends Thread {
 				// check the to do hashMap
 				// if anything there , give the response to the player
 				//		
-				System.out.println("in Read Case: ...");
-				if(responses.containsKey(new Player(req.sender))){
+				System.out.println("in Read Case for "+ req.sender +": ...");
+				System.out.println(responses);
+				if(responses.containsKey((req.sender))){
 					pw.println("True");
 					pw.flush();
 					oout = new ObjectOutputStream(client.getOutputStream());
-					oout.writeObject(responses.get(new Player(req.sender)));
-					responses.remove(new Player(req.sender));
+					oout.writeObject(responses.get((req.sender)));
+					oout.flush();
+					responses.remove((req.sender));
 					System.gc();
+					System.err.println("gave responses to player");
+					@SuppressWarnings("unchecked")
+					HashMap<String, Boolean>confs = ((HashMap<String, Boolean>)(in.readObject()));
+					confirms.putAll(confs);
+					//TODO check if done right
 				}else{
 					pw.println("Flase");
 					pw.flush();

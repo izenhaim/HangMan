@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -111,9 +112,9 @@ public class GameClient {
 						}
 						ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
 						ArrayList<Player> players = ((ArrayList<Player>)oin.readObject());
-						String[] pls = new String[players.size()];
+						String[] pls = new String[players.size()-1];
 						for(int i=0 ; i<players.size() ; i++)
-							if(players.get(i).name!=playerName[0])
+							if(!players.get(i).name.equals( playerName[0]))
 								pls[i] = players.get(i).name;
 						
 						
@@ -136,14 +137,22 @@ public class GameClient {
 								System.out.println("server didnot resive anything");
 							}
 						}
+						System.err.println("waiting");
 						JOptionPane.showMessageDialog(null, "waiting for "+chosenName + " to confirm");
-						if(sc.nextBoolean()){
-							//TODO
+						if(((Boolean)oin.readObject())){
+							
+							new SubGameClient(playerName[0]+"-"+chosenName , chosenName , playerName[0] , gLength , true);
+							
+							
 						}else{
 							//TODO
 						}
 						
 						
+						//TODO ??
+						sc.close();
+						s.close();
+						//
 						
 						
 					} catch (UnknownHostException e1) {
@@ -243,18 +252,36 @@ public class GameClient {
 					}
 				}
 				if(sc.nextLine().equals("True")){
+					//TODO 
+					//bug : 
 					ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
 					@SuppressWarnings("unchecked")
 					ArrayList<Response> incomingReses = ((ArrayList<Response>)(oin.readObject()));
+					System.err.println("got response");
+					HashMap<String, Boolean> confs = new HashMap<>();
 					for(Response i : incomingReses){
 						if(i.startGame == true){
-							JOptionPane.showConfirmDialog(MainMenu, "Player " + i.msg +" wants to start game with you for " + i.msg2);
-							//TODO
+							int answer = JOptionPane.showConfirmDialog(MainMenu, "Player " + i.msg +" wants to start game with you for " + i.msg2);
+							
+							confs.put(i.msg+"-"+playerName[0], answer==0?true:false);
+							
+							new SubGameClient(i.msg+"-"+playerName[0] , i.msg , playerName[0] , Integer.parseInt(i.msg2) , false);
+							
 						}else{
 							int index = games.indexOf(new SubGameClient(i.GameID));
 							games.get(index).getRes(i);
 						}
-					}		
+					}	
+					// TODO send the confirms to server and read them also from there!
+					//TODO start confirmed games
+					
+					oot.writeObject(confs);
+					oot.flush();
+					
+					
+					
+				}else{
+					System.err.println("no response");
 				}
 				
 				s.close();

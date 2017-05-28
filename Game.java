@@ -6,13 +6,15 @@ public class Game {
 	Player p1;
 	Player p2;
 	String ID;
+	int gameLenght;
 	private ArrayList<Integer> gussedChars = new ArrayList<>();
 	private ArrayList<Character> chars = new ArrayList<>();
 	
-	public Game(Player p1, Player p2) {
+	public Game(Player p1, Player p2 , int gameLenght) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.ID = p1.toString() + "-" + p2.toString();
+		this.gameLenght = gameLenght;
 	}
 	
 	boolean hasPlayer(Player p){

@@ -4,10 +4,9 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class Player implements Serializable {
-	boolean gusser;
+	boolean gusser = false;
 	String opponentName;
 	String name;
-	int opponentIP;
 
 	public Player() {
 	}
@@ -28,5 +27,6 @@ public class Player implements Serializable {
 		else
 			return false;
 	}
+	
 
 }
