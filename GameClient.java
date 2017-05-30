@@ -30,6 +30,7 @@ public class GameClient {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		int score = 0;
 		final String[] playerName = new String[1];
@@ -248,15 +249,55 @@ public class GameClient {
 		}
 			
 		try{
+			
+			
+			
+			System.out.println("updating from server ...");
+			Socket s = new Socket("127.0.0.1", 1111);
+			s.setSoTimeout(0);
+			System.out.println("socket created");
+			Scanner sc = new Scanner(s.getInputStream());
+			ObjectOutputStream oot = new ObjectOutputStream(s.getOutputStream());
+			System.out.println("oot created");
+			Request r = new Request();
+			r.type = ReqType.Read;
+			r.sender = playerName[0];
+			while (true) {
+				System.out.println("in while true 2");
+				oot.writeObject(r);
+				oot.flush();
+				if (sc.nextLine().equals("recived")) {
+					System.out.println("serever recieved msg ... breaking whileTrue 2");
+					break;
+				} else {
+					System.out.println("server didnot resive anything");
+				}
+			}
+				
+			ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
+			@SuppressWarnings("unchecked")
+			ArrayList<Response> incomingReses = ((ArrayList<Response>)(oin.readObject()));
+			System.err.println("got response");
+			HashMap<String, Boolean> confs = new HashMap<>();
+			for(Response i : incomingReses){
+				if(i.startGame == true){
+					int answer = JOptionPane.showConfirmDialog(MainMenu, "Player " + i.msg +" wants to start game with you for " + i.msg2 + " turns.");
+					confs.put(i.msg+"-"+playerName[0], answer==0?true:false);
+						if(answer==0)
+							new SubGameClient(i.msg+"-"+playerName[0] , i.msg , playerName[0] , Integer.parseInt(i.msg2) , false);
+					}else{
+						int index = games.indexOf(new SubGameClient(i.GameID));
+						games.get(index).getRes(i);
+					}
+				}	
+				oot.writeObject(confs);
+				oot.flush();
+				
+			
 			while (true) {
 				Thread.sleep(1000);
 				System.out.println("updating from server ...");
-				Socket s = new Socket("127.0.0.1", 1111);
-				System.out.println("socket created");
-				Scanner sc = new Scanner(s.getInputStream());
-				ObjectOutputStream oot = new ObjectOutputStream(s.getOutputStream());
-				System.out.println("oot created");
-				Request r = new Request();
+				r = new Request();
 				r.type = ReqType.Read;
 				r.sender = playerName[0];
 				while (true) {
@@ -270,14 +311,10 @@ public class GameClient {
 						System.out.println("server didnot resive anything");
 					}
 				}
-				if(sc.nextLine().equals("True")){
-					//TODO 
-					//bug : 
-					ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
-					@SuppressWarnings("unchecked")
-					ArrayList<Response> incomingReses = ((ArrayList<Response>)(oin.readObject()));
+				
+					incomingReses = ((ArrayList<Response>)(oin.readObject()));
 					System.err.println("got response");
-					HashMap<String, Boolean> confs = new HashMap<>();
+					confs = new HashMap<>();
 					for(Response i : incomingReses){
 						if(i.startGame == true){
 							int answer = JOptionPane.showConfirmDialog(MainMenu, "Player " + i.msg +" wants to start game with you for " + i.msg2 + " turns.");
@@ -300,12 +337,6 @@ public class GameClient {
 					
 					
 					
-				}else{
-					System.err.println("no response");
-				}
-				
-				s.close();
-				sc.close();
 			}
 		}catch (UnknownHostException e) {
 			e.printStackTrace();

@@ -106,27 +106,36 @@ public class GameCenter extends Thread {
 			case Read:
 				// check the to do hashMap
 				// if anything there , give the response to the player
-				//		
-				System.out.println("in Read Case for "+ req.sender +": ...");
-				System.out.println(responses);
-				if(responses.containsKey((req.sender))){
-					pw.println("True");
-					pw.flush();
-					oout = new ObjectOutputStream(client.getOutputStream());
-					oout.writeObject(responses.remove((req.sender)));
-					oout.flush();
-					System.gc();
-					System.err.println("gave responses to player");
-					@SuppressWarnings("unchecked")
-					HashMap<String, Boolean>confs = ((HashMap<String, Boolean>)(in.readObject()));
-					confirms.putAll(confs);
-					//TODO check if done right
-				}else{
-					pw.println("False");
+				//
+				client.setSoTimeout(0);
+				oout = new ObjectOutputStream(client.getOutputStream());
+				
+				while(true){
+					System.out.println("in Read Case for "+ req.sender +": ...");
+					System.out.println(responses);
+					if(responses.containsKey((req.sender))){
+						oout.writeObject(responses.remove((req.sender)));
+						oout.flush();
+						System.gc();
+						System.err.println("gave responses to player");
+						@SuppressWarnings("unchecked")
+						HashMap<String, Boolean>confs = ((HashMap<String, Boolean>)(in.readObject()));
+						confirms.putAll(confs);
+						//TODO check if done right
+					}else{
+						oout.writeObject(new ArrayList<Response>());
+						oout.flush();
+						@SuppressWarnings("unchecked")
+						HashMap<String, Boolean>confs = ((HashMap<String, Boolean>)(in.readObject()));
+						confirms.putAll(confs);
+					}
+					Thread.sleep(1000);
+					req = (Request) in.readObject();
+					System.out.println("got new req");
+					pw.println("recived");
 					pw.flush();
 				}
-				
-				break;
+			
 			case Write:
 				// get the letter / word ...
 				// hand it to the related game
