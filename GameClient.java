@@ -113,25 +113,46 @@ public class GameClient {
 						ObjectInputStream oin = new ObjectInputStream(s.getInputStream());
 						ArrayList<Player> players = ((ArrayList<Player>)oin.readObject());
 						String[] pls = new String[players.size()-1];
-						for(int i=0 ; i<players.size() ; i++)
-							if(!players.get(i).name.equals( playerName[0]))
-								pls[i] = players.get(i).name;
+						for(int i=0,j=0 ; j<players.size() ; i++,j++)
+							if(!players.get(j).name.equals( playerName[0]))
+								pls[i] = players.get(j).name;
+							else{
+								i--;
+							}
 						
 						
 							
 						String chosenName = pls[JOptionPane.showOptionDialog(null, "select opponent", null, JOptionPane.YES_NO_OPTION , JOptionPane.QUESTION_MESSAGE, null, pls, "5")];
 
-						int gLength = JOptionPane.showOptionDialog(null, "select Game Lenght", null, JOptionPane.YES_NO_OPTION , JOptionPane.QUESTION_MESSAGE, null, new String[] {"3","5","7","9"}, "5");
-						
+						int chosenNum = JOptionPane.showOptionDialog(null, "select Game Lenght", null, JOptionPane.YES_NO_OPTION , JOptionPane.QUESTION_MESSAGE, null, new String[] {"3","5","7","9"}, "5");
+						int gLenght =5;
+						switch (chosenNum) {
+						case 0:
+							gLenght=3;
+							break;
+						case 1:
+							gLenght=5;
+							break;
+						case 2:
+							gLenght=7;
+							break;
+						case 3:
+							gLenght=9;
+							break;
+						}
+						System.err.print("game lenght : ");
+						System.out.println(gLenght);
 						r = new Request();
 						r.type = ReqType.StartGame;
 						r.sender = playerName[0];
 						r.msg = chosenName;
-						r.msg2 = String.valueOf(gLength);
+						r.msg2 = String.valueOf(gLenght);
 						while (true) {
 							oot.writeObject(r);
 							oot.flush();
+							System.err.println("sent start game req");
 							if (sc.nextLine().equals("recived")) {
+								System.err.println("server got start game msg!");
 								break;
 							} else {
 								System.out.println("server didnot resive anything");
@@ -141,10 +162,11 @@ public class GameClient {
 						JOptionPane.showMessageDialog(null, "waiting for "+chosenName + " to confirm");
 						if(((Boolean)oin.readObject())){
 							
-							new SubGameClient(playerName[0]+"-"+chosenName , chosenName , playerName[0] , gLength , true);
+							new SubGameClient(playerName[0]+"-"+chosenName , chosenName , playerName[0] , gLenght , true);
 							
 							
 						}else{
+							JOptionPane.showMessageDialog(null, chosenName+" refused!");
 							//TODO
 						}
 						
@@ -163,9 +185,6 @@ public class GameClient {
 						e1.printStackTrace();
 					}
 					
-					//new SubGameClient("" , "oppo" , playerName[0]);
-					// TODO :
-					// start new game ...
 				}
 			});
 			StartGameButton.setBackground(Color.WHITE);
@@ -261,11 +280,12 @@ public class GameClient {
 					HashMap<String, Boolean> confs = new HashMap<>();
 					for(Response i : incomingReses){
 						if(i.startGame == true){
-							int answer = JOptionPane.showConfirmDialog(MainMenu, "Player " + i.msg +" wants to start game with you for " + i.msg2);
+							int answer = JOptionPane.showConfirmDialog(MainMenu, "Player " + i.msg +" wants to start game with you for " + i.msg2 + " turns.");
 							
 							confs.put(i.msg+"-"+playerName[0], answer==0?true:false);
 							
-							new SubGameClient(i.msg+"-"+playerName[0] , i.msg , playerName[0] , Integer.parseInt(i.msg2) , false);
+							if(answer==0)
+								new SubGameClient(i.msg+"-"+playerName[0] , i.msg , playerName[0] , Integer.parseInt(i.msg2) , false);
 							
 						}else{
 							int index = games.indexOf(new SubGameClient(i.GameID));

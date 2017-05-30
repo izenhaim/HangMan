@@ -38,9 +38,9 @@ public class GameCenter extends Thread {
 			System.out.println("before Switch statement:");
 			switch (req.type) {
 			case StartGame:
-				// give the available players
-				// get the opponent name
-				// request(send response over the read request to the player)
+				// give the available players :DONE
+				// get the opponent name : DONE
+				// request(send response over the read request to the player) : DONE
 				// opponent
 				// if accepted :
 				// create game
@@ -53,6 +53,7 @@ public class GameCenter extends Thread {
 				oout.flush();
 				req = (Request) in.readObject();
 				pw.println("recived");
+				pw.flush();
 				Response res = new Response();
 				res.startGame = true;
 				res.msg = req.sender;
@@ -93,7 +94,7 @@ public class GameCenter extends Thread {
 				break;
 				
 			case DisConnect:
-				//delete games with this player!
+				//TODO delete games with this player!
 				// ... 
 				System.out.println("in DisConnect Case: ...");
 				Player p = new Player(req.sender);
@@ -112,9 +113,8 @@ public class GameCenter extends Thread {
 					pw.println("True");
 					pw.flush();
 					oout = new ObjectOutputStream(client.getOutputStream());
-					oout.writeObject(responses.get((req.sender)));
+					oout.writeObject(responses.remove((req.sender)));
 					oout.flush();
-					responses.remove((req.sender));
 					System.gc();
 					System.err.println("gave responses to player");
 					@SuppressWarnings("unchecked")
@@ -122,7 +122,7 @@ public class GameCenter extends Thread {
 					confirms.putAll(confs);
 					//TODO check if done right
 				}else{
-					pw.println("Flase");
+					pw.println("False");
 					pw.flush();
 				}
 				
